@@ -1,0 +1,42 @@
+{
+    "name": "opensourcerefinery/vicus-twig-service-provider",
+    "keywords": ["pimple", "dependency injection", "container"],
+    "description": "Build a Pimple/Container from a config file",
+    "license":"MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "Michael Koert",
+            "email": "mkoert@bluebikeproductions.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "OpenSourceRefinery\\VicusProvider\\TwigServiceProvider\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OpenSourceRefinery\\VicusProvider\\TwigServiceProvider\\Test\\Unit\\": "test/unit/",
+            "OpenSourceRefinery\\VicusProvider\\TwigServiceProvider\\Test\\Integration\\": "test/integraton/"
+        }
+    },
+    "require":{
+        "symfony/twig-bridge": "~2.3|3.0.*"
+    },
+    "require-dev": {
+        "opensourcerefinery/vicus": "~1.0",
+        "phpunit/phpunit": "4.5.*@dev"
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
