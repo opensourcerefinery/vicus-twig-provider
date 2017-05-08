@@ -48,6 +48,7 @@ class TwigServiceProvider implements ServiceProviderInterface
 
             $twig = new \Twig_Environment($container['twig.loader'], $container['twig.options']);
             // $twig->addGlobal('container', $container);
+            // $twig->setLoader(new \Twig_Loader_String());
 
             if ($container['debug']) {
                 $twig->addExtension(new \Twig_Extension_Debug());
@@ -73,13 +74,13 @@ class TwigServiceProvider implements ServiceProviderInterface
                 }
 
                 if (isset($container['form.factory'])) {
-                    $container['twig.form.engine'] = $container->share(function ($container) {
+                    $container['twig.form.engine'] = function ($container) {
                         return new TwigRendererEngine($container['twig.form.templates']);
-                    });
+                    };
 
-                    $container['twig.form.renderer'] = $container->share(function ($container) {
+                    $container['twig.form.renderer'] = function ($container) {
                         return new TwigRenderer($container['twig.form.engine'], $container['form.csrf_provider']);
-                    });
+                    };
 
                     $twig->addExtension(new FormExtension($container['twig.form.renderer']));
 
@@ -111,5 +112,14 @@ class TwigServiceProvider implements ServiceProviderInterface
 
     public function boot(Container $container)
     {
+        foreach($container['template_variables'] as $key => $value)
+		{
+
+			if(isset($container[$key])){
+				$paramValue = $container[$key];
+				$container['twig']->addGlobal($key, $paramValue);
+			}
+
+		}
     }
 }

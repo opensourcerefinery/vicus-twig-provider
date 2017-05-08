@@ -1,0 +1,4 @@
+# parameters:
+#     site_title: MHVillage
+#     template_variables: [site_title, environment]
+# services:
