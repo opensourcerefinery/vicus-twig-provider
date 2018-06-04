@@ -25,14 +25,19 @@
         }
     },
     "require":{
-        "symfony/twig-bridge": "~2.3|3.0.*"
+        "symfony/twig-bridge": "~2.8"
     },
     "require-dev": {
-        "opensourcerefinery/vicus": "~1.0",
+        "opensourcerefinery/vicus": "~1",
         "phpunit/phpunit": "4.5.*@dev"
     },
     "config": {
         "bin-dir": "bin/"
+    },
+    "scripts": {
+        "test": [
+            "php vendor/phpunit/phpunit/phpunit --bootstrap vendor/autoload.php tests/ --verbose"
+        ]
     },
     "extra": {
         "branch-alias": {

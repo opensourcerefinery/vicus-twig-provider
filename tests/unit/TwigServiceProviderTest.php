@@ -10,6 +10,7 @@
  */
 
 namespace Vicus\Tests\Provider;
+
 use Pimple\Container;
 use Vicus\Application;
 use OpenSourceRefinery\VicusProvider\TwigServiceProvider\TwigServiceProvider;
@@ -23,17 +24,20 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TwigServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function getConfig(){
+    protected function getConfig()
+    {
         return [
             'config.path' => 'tests/unit/resources',
-
+            'twig.path' => 'tests/unit/resources',
 
         ];
     }
-    protected function getContainer(){
+    protected function getContainer()
+    {
         $container = new Container();
         $container['template_variables'] = ['site_title', 'environment'];
         $container['site_title'] = 'TEST TEST';
+        $container['twig.path'] = 'tests/unit/resources';
 
         return $container;
     }
@@ -90,24 +94,41 @@ class TwigServiceProviderTest extends \PHPUnit_Framework_TestCase
         $app = new Application($container, $config);
 
         $template = 'Hello {{ name }}!';
-
-
-        foreach($container['template_variables'] as $key => $value)
-		{
-			if(isset($container[$key])){
-
-				$paramValue = $container[$key];
-				$container['twig']->addGlobal($key, $paramValue);
-			}
-
-		}
-
         $app->register(new TwigServiceProvider(), array(
         ));
+
+        foreach ($container['template_variables'] as $key => $value) {
+            if (isset($container[$key])) {
+                $paramValue = $container[$key];
+                $container['twig']->addGlobal($key, $paramValue);
+            }
+        }
+
+
         $name = 'john';
         $template = $container['twig']->createTemplate('Hello {{ name }}!');
         $content = $template->render(array('name' => $name));
         $this->assertEquals('Hello john!', $content);
+    }
 
+
+    public function testRenderFile()
+    {
+        $config = $this->getConfig();
+
+        $container = $this->getContainer();
+        $app = new Application($container, $config);
+
+        $templateFile = 'index.html.twig';
+
+        $app->register(new TwigServiceProvider(), array(
+        ));
+        $container['twig.path'] = 'tests/unit/resources';
+        $app->boot();
+        error_log(print_r($container['twig.path']));
+
+        $name = 'john';
+        $content = trim($container['twig']->render($templateFile, ['name'=>$name]));
+        $this->assertEquals('Hello john', $content);
     }
 }
