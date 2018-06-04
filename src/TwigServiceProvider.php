@@ -47,48 +47,9 @@ class TwigServiceProvider implements ServiceProviderInterface
             );
 
             $twig = new \Twig_Environment($container['twig.loader'], $container['twig.options']);
-            // $twig->addGlobal('container', $container);
-            // $twig->setLoader(new \Twig_Loader_String());
 
             if ($container['debug']) {
                 $twig->addExtension(new \Twig_Extension_Debug());
-            }
-
-            if (class_exists('Symfony\Bridge\Twig\Extension\RoutingExtension')) {
-                if (isset($container['url_generator'])) {
-                    $twig->addExtension(new RoutingExtension($container['url_generator']));
-                }
-
-                if (isset($container['translator'])) {
-                    $twig->addExtension(new TranslationExtension($container['translator']));
-                }
-
-                if (isset($container['security.authorization_checker'])) {
-                    $twig->addExtension(new SecurityExtension($container['security.authorization_checker']));
-                }
-
-                if (isset($container['fragment.handler'])) {
-                    $container['fragment.renderer.hinclude']->setTemplating($twig);
-
-                    $twig->addExtension(new HttpKernelExtension($container['fragment.handler']));
-                }
-
-                if (isset($container['form.factory'])) {
-                    $container['twig.form.engine'] = function ($container) {
-                        return new TwigRendererEngine($container['twig.form.templates']);
-                    };
-
-                    $container['twig.form.renderer'] = function ($container) {
-                        return new TwigRenderer($container['twig.form.engine'], $container['form.csrf_provider']);
-                    };
-
-                    $twig->addExtension(new FormExtension($container['twig.form.renderer']));
-
-                    // add loader for Symfony built-in form templates
-                    $reflected = new \ReflectionClass('Symfony\Bridge\Twig\Extension\FormExtension');
-                    $path = dirname($reflected->getFileName()).'/../Resources/views/Form';
-                    $container['twig.loader']->addLoader(new \Twig_Loader_Filesystem($path));
-                }
             }
 
             return $twig;
@@ -112,14 +73,11 @@ class TwigServiceProvider implements ServiceProviderInterface
 
     public function boot(Container $container)
     {
-        foreach($container['template_variables'] as $key => $value)
-		{
-
-			if(isset($container[$key])){
-				$paramValue = $container[$key];
-				$container['twig']->addGlobal($key, $paramValue);
-			}
-
-		}
+        foreach ($container['template_variables'] as $key => $value) {
+            if (isset($container[$key])) {
+                $paramValue = $container[$key];
+                $container['twig']->addGlobal($key, $paramValue);
+            }
+        }
     }
 }
