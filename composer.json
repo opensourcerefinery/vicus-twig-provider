@@ -25,7 +25,8 @@
         }
     },
     "require":{
-        "symfony/twig-bridge": "~2.6"
+        "twig/twig": "~1",
+        "symfony/twig-bridge": "~2.8"
     },
     "require-dev": {
         "opensourcerefinery/vicus": "~1",
